@@ -37,11 +37,8 @@ export default function Page() {
   const charsLeft = maxChars - message.length;
   const [loading, setLoading] = useState(false);
   const [sharing, setSharing] = useState(false);
-  const [isScrolledUp, setIsScrolledUp] = useState(false);
-  const [hasNewPosts, setHasNewPosts] = useState(false);
   const [lastPostId, setLastPostId] = useState<string | null>(null);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('list'); // New view mode feature
 
   // Fetch posts from Supabase on mount
   useEffect(() => {
@@ -87,34 +84,15 @@ export default function Page() {
         
         // Check if this is a new post (not the initial load)
         if (lastPostId && p.id !== lastPostId) {
-          setHasNewPosts(true);
+          setPosts((prev) => [newPost, ...prev]);
+          setLastPostId(p.id);
         }
-        
-        setPosts((prev) => [newPost, ...prev]);
-        setLastPostId(p.id);
       })
       .subscribe();
     return () => {
       supabase.removeChannel(channel);
     };
   }, [lastPostId]);
-
-  // Handle scroll events to track if user is scrolled up
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
-      setIsScrolledUp(scrollTop > 100);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Function to scroll to top and clear new posts indicator
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setHasNewPosts(false);
-  };
 
   async function handleShare(e: React.FormEvent) {
     e.preventDefault();
@@ -242,7 +220,6 @@ export default function Page() {
             posts={posts}
             sidebar={sidebar}
             loading={loading}
-            viewMode={viewMode}
           />
         </div>
       </div>

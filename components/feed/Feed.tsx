@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import FeedItem from "./FeedItem";
 import FullscreenImageModal from "./FullscreenImageModal";
-import { Post } from "@/types/post";
-import { SidebarData } from "@/types/sidebar";
+import { Post } from "../../types/post";
+import { SidebarData } from "../../types/sidebar";
 import { List, Expand } from "lucide-react";
 
 interface FeedProps {
   posts: Post[];
   sidebar: SidebarData;
   loading: boolean;
-  viewMode: 'grid' | 'list';
 }
 
-const Feed: React.FC<FeedProps> = ({ posts, sidebar, loading, viewMode }) => {
+const Feed: React.FC<FeedProps> = ({ posts, sidebar, loading }) => {
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [imageMode, setImageMode] = useState<'contain' | 'cover'>('contain');
 
